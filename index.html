@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Laporan Les Privat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f5f7fa;
+            --dark-color: #2c3e50;
+            --border-color: #ddd;
+            --header-bg: #ecf0f1;
+            --table-header-bg: #2c3e50;
+            --table-row-even: #f9f9f9;
+            --table-row-hover: #f1f8ff;
+        }
+
+        .dark-theme {
+            --primary-color: #ecf0f1;
+            --secondary-color: #bdc3c7;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --light-color: #2c3e50;
+            --dark-color: #ecf0f1;
+            --border-color: #4a5568;
+            --header-bg: #34495e;
+            --table-header-bg: #1a252f;
+            --table-row-even: #34495e;
+            --table-row-hover: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .login-logo i {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+        }
+
+        .login-logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .login-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .login-note {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #777;
+            font-style: italic;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 5px;
+            background-color: #27ae60;
+            color: white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background-color: #e74c3c;
+        }
+
+        .notification.warning {
+            background-color: #f39c12;
+        }
+
+        /* App Styles (After Login) */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50px;
+            width: 60px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .theme-toggle i {
+            position: absolute;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .fa-sun {
+            left: 7px;
+            color: #FFD700;
+        }
+
+        .fa-moon {
+            right: 7px;
+            color: #f8f9fa;
+        }
+
+        .toggle-circle {
+            width: 22px;
+            height: 22px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            left: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .dark-theme .toggle-circle {
+            left: 33px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .card-title i {
+            font-size: 1.3rem;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 5px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .student-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .student-info {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-top: 3px;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .student-actions button {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+
+        .schedules-container {
+            grid-column: 1 / -1;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .schedule-table th {
+            background-color: var(--table-header-bg);
+            color: white;
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        .schedule-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background-color: var(--table-row-even);
+        }
+
+        .schedule-table tr:hover {
+            background-color: var(--table-row-hover);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #777;
+            font-style: italic;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .report-section {
+            margin-top: 40px;
+        }
+
+        .report-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .month-selector select {
+            width: auto;
+            min-width: 140px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+            font-size: 0.85rem;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #777;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #ccc;
+        }
+
+        .student-schedule-tab {
+            margin-bottom: 30px;
+        }
+
+        .student-schedule-tab h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pdf-preview {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .pdf-preview h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            text-decoration: underline;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .pdf-preview table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .pdf-preview th, .pdf-preview td {
+            border: 1px solid black;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .pdf-preview th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .pdf-preview p {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .parent-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .student-info-card {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .student-name-large {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .summary-card {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left: 4px solid var(--success-color);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .summary-title {
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
+
+        .summary-item {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h1>Sistem Les Privat</h1>
+            </div>
+            
+            <h2 class="login-title">Masuk ke Sistem</h2>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Nama / Username</label>
+                    <input type="text" id="username" placeholder="Masukkan nama atau username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password (untuk admin)</label>
+                    <input type="password" id="password" placeholder="Masukkan password untuk admin">
+                    <p class="login-note">Untuk orang tua: cukup isi nama saja</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App (Hidden by default) -->
+    <div id="appContainer" class="hidden">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <h1 id="appTitle">Laporan Jadwal Les Privat</h1>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-role" id="userRole"></span>
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon"></i>
+                            <div class="toggle-circle"></div>
+                        </button>
+                        <button class="logout-btn" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Keluar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Interface -->
+        <div id="adminInterface" class="hidden">
+            <div class="container">
+        <div class="card" style="margin-top: 20px;">
+    <h2 class="card-title">
+        <i class="fas fa-exchange-alt"></i> Sinkronisasi Data Antar Perangkat
+    </h2>
+    <p>Ekspor data untuk digunakan di perangkat lain, atau impor data dari perangkat lain.</p>
+    
+    <div class="report-actions">
+        <button type="button" class="btn btn-success" id="exportData">
+            <i class="fas fa-download"></i> Ekspor Semua Data
+        </button>
+        <button type="button" class="btn btn-warning" id="importData">
+            <i class="fas fa-upload"></i> Impor Data
+        </button>
+        <input type="file" id="importFile" accept=".json" style="display: none;">
+    </div>
+    
+    <div class="student-info-card" style="margin-top: 15px;">
+        <p><strong>Catatan:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+            <li>Data saat ini tersimpan hanya di perangkat ini</li>
+            <li>Ekspor data untuk mentransfer ke perangkat lain</li>
+            <li>Impor data dari file yang sudah diekspor</li>
+            <li>File data aman dan hanya berisi JSON</li>
+        </ul>
+    </div>
+</div>
+                <div class="main-content">
+                    <div class="card">
+                        <h2 class="card-title">
+                            <i class="fas fa-user-plus"></i> Tambah Siswa Baru
+                        </h2>
+                        <form id="addStudentForm">
+                            <div class="form-group">
+                                <label for="studentName">Nama Siswa</label>
+                                <input type="text" id="studentName" placeholder="Masukkan nama lengkap siswa" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="studentGrade">Kelas / Tingkat</label>
+                                <input type="text" id="studentGrade" placeholder="Contoh: 10 SMA / 5 SD" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="studentSubject">Mata Pelajaran</label>
+                                <input type="text" id="studentSubject" placeholder="Contoh: Matematika, Fisika" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus-circle"></i> Tambah Siswa
+                            </button>
+                        </form>
+                        
+                        <div class="student-list" id="studentList">
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <p>Belum ada siswa yang ditambahkan</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">
+                            <i class="fas fa-calendar-plus"></i> Tambah Jadwal Les
+                        </h2>
+                        <form id="addScheduleForm">
+                            <div class="form-group">
+                                <label for="scheduleStudent">Pilih Siswa</label>
+                                <select id="scheduleStudent" required>
+                                    <option value="" disabled selected>Pilih siswa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleDate">Tanggal Les</label>
+                                <input type="text" id="scheduleDate" class="datepicker" placeholder="Pilih tanggal" required>
+                            </div>
+                            <div class="form-group time-inputs">
+                                <div>
+                                    <label for="startTime">Jam Mulai</label>
+                                    <input type="time" id="startTime" required>
+                                </div>
+                                <div>
+                                    <label for="endTime">Jam Selesai</label>
+                                    <input type="time" id="endTime" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleMaterial">Materi yang Diajarkan</label>
+                                <textarea id="scheduleMaterial" rows="3" placeholder="Deskripsi materi yang diajarkan" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calendar-check"></i> Tambah Jadwal
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card schedules-container">
+                    <h2 class="card-title">
+                        <i class="fas fa-calendar-alt"></i> Jadwal Les per Siswa
+                    </h2>
+                    <div id="schedulesTabs">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <p>Belum ada jadwal les yang ditambahkan</p>
+                            <p class="small">Tambahkan siswa dan jadwal les terlebih dahulu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card report-section">
+                    <h2 class="card-title">
+                        <i class="fas fa-file-pdf"></i> Download Laporan PDF
+                    </h2>
+                    <p>Pilih siswa dan bulan untuk menghasilkan laporan PDF dalam format absen.</p>
+                    
+                    <div class="month-selector">
+                        <div class="form-group">
+                            <label for="reportStudent">Pilih Siswa</label>
+                            <select id="reportStudent" required>
+                                <option value="" disabled selected>Pilih siswa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportMonth">Pilih Bulan</label>
+                            <select id="reportMonth" required>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportYear">Pilih Tahun</label>
+                            <select id="reportYear" required>
+                                <!-- Opsi tahun akan diisi oleh JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="report-actions">
+                        <button type="button" class="btn btn-success" id="generateReport">
+                            <i class="fas fa-file-pdf"></i> Generate Laporan PDF
+                        </button>
+                        <button type="button" class="btn btn-warning" id="previewReport">
+                            <i class="fas fa-eye"></i> Preview Laporan
+                        </button>
+                    </div>
+                    
+                    <div id="reportPreview" class="hidden pdf-preview">
+                        <!-- Preview laporan akan ditampilkan di sini -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parent Interface -->
+        <div id="parentInterface" class="hidden">
+            <div class="container parent-section">
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-calendar-alt"></i> Jadwal Les Anak
+                    </h2>
+                    
+                    <div class="student-info-card">
+                        <div class="student-name-large" id="parentStudentName"></div>
+                        <div class="student-info">
+                            <div id="parentStudentGrade"></div>
+                            <div id="parentStudentSubject"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="month-selector">
+                        <div class="form-group">
+                            <label for="parentMonth">Pilih Bulan</label>
+                            <select id="parentMonth" required>
+                                <option value="0">Semua Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="parentYear">Pilih Tahun</label>
+                            <select id="parentYear" required>
+                                <!-- Opsi tahun akan di-generate oleh JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" id="filterScheduleBtn">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="parentSchedules">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <p>Belum ada jadwal les yang ditemukan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card" id="scheduleSummary" style="display: none;">
+                        <div class="summary-title">
+                            <i class="fas fa-chart-bar"></i> Ringkasan Jadwal
+                        </div>
+                        <div class="summary-item" id="totalSessions"></div>
+                        <div class="summary-item" id="totalHours"></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-info-circle"></i> Informasi untuk Orang Tua
+                    </h2>
+                    <p>Berikut adalah informasi penting mengenai jadwal les anak Anda:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Jadwal ini diperbarui secara berkala oleh guru les privat</li>
+                        <li>Pastikan anak Anda hadir tepat waktu sesuai jadwal</li>
+                        <li>Jika ada perubahan jadwal, Anda akan diinformasikan oleh guru</li>
+                        <li>Setiap sesi les dicatat dengan materi yang diajarkan</li>
+                        <li>Untuk pertanyaan atau konfirmasi, hubungi guru les privat</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic; color: #666;">
+                        <i class="fas fa-exclamation-circle"></i> Halaman ini hanya menampilkan jadwal. Untuk mengubah data, silakan hubungi admin.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Inisialisasi variabel dan data
+        let students = JSON.parse(localStorage.getItem('privat_students')) || [];
+        let schedules = JSON.parse(localStorage.getItem('privat_schedules')) || [];
+        let isDarkTheme = localStorage.getItem('privat_dark_theme') === 'true';
+        let currentUser = null;
+        let currentUserRole = null;
+        let currentParentStudent = null;
+        
+        // Admin credentials
+        const ADMIN_USERNAME = "Qoni'";
+        const ADMIN_PASSWORD = "admin123";
+        
+        // Inisialisasi flatpickr untuk datepicker
+        function initDatePicker() {
+            flatpickr("#scheduleDate", {
+                dateFormat: "d-m-Y",
+                locale: "id",
+                disableMobile: true
+            });
+        }
+        
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveData() {
+            localStorage.setItem('privat_students', JSON.stringify(students));
+            localStorage.setItem('privat_schedules', JSON.stringify(schedules));
+        }
+        
+        // Fungsi untuk login
+        function login(username, password) {
+            // Cek jika admin
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                currentUser = username;
+                currentUserRole = 'admin';
+                showApp('admin');
+                showNotification(`Selamat datang, ${username} (Admin)`);
+                return true;
+            }
+            
+            // Cek jika orang tua (cari siswa berdasarkan nama)
+            const student = students.find(s => 
+                s.name.toLowerCase() === username.toLowerCase()
+            );
+            
+            if (student) {
+                currentUser = username;
+                currentUserRole = 'parent';
+                currentParentStudent = student;
+                showApp('parent');
+                showNotification(`Selamat datang, orang tua/wali dari ${student.name}`);
+                return true;
+            }
+            
+            // Jika tidak ditemukan
+            showNotification('Username/password yang Anda masukkan salah', 'error');
+            return false;
+        }
+        
+        // Fungsi untuk logout
+        function logout() {
+            currentUser = null;
+            currentUserRole = null;
+            currentParentStudent = null;
+            
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
+            document.getElementById('adminInterface').classList.add('hidden');
+            document.getElementById('parentInterface').classList.add('hidden');
+            
+            // Reset form login
+            document.getElementById('loginForm').reset();
+            
+            showNotification('Anda telah keluar dari sistem');
+        }
+        
+        // Fungsi untuk menampilkan aplikasi berdasarkan role
+        function showApp(role) {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('appContainer').classList.remove('hidden');
+            
+            if (role === 'admin') {
+                document.getElementById('appTitle').textContent = 'Admin - Laporan Jadwal Les Privat';
+                document.getElementById('userRole').textContent = 'Admin';
+                document.getElementById('adminInterface').classList.remove('hidden');
+                document.getElementById('parentInterface').classList.add('hidden');
+                
+                // Inisialisasi komponen admin
+                initDatePicker();
+                loadStudentDropdowns();
+                renderStudentList();
+                renderSchedulesTabs();
+                populateYearOptions();
+            } else if (role === 'parent') {
+                document.getElementById('appTitle').textContent = 'Orang Tua - Jadwal Les Privat';
+                document.getElementById('userRole').textContent = 'Orang Tua/Wali';
+                document.getElementById('adminInterface').classList.add('hidden');
+                document.getElementById('parentInterface').classList.remove('hidden');
+                
+                // Inisialisasi komponen orang tua
+                initParentView();
+            }
+            
+            // Set tema
+            setTheme(isDarkTheme);
+        }
+        
+        // Fungsi untuk mengatur tema gelap/terang
+        function setTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-theme');
+                if (document.querySelector('.fa-sun')) {
+                    document.querySelector('.fa-sun').style.opacity = '0.5';
+                    document.querySelector('.fa-moon').style.opacity = '1';
+                }
+            } else {
+                document.body.classList.remove('dark-theme');
+                if (document.querySelector('.fa-sun')) {
+                    document.querySelector('.fa-sun').style.opacity = '1';
+                    document.querySelector('.fa-moon').style.opacity = '0.5';
+                }
+            }
+            
+            localStorage.setItem('privat_dark_theme', isDark);
+        }
+        
+        // =============================================
+        // ADMIN FUNCTIONS
+        // =============================================
+        
+        // Fungsi untuk memuat data siswa ke dropdown
+        function loadStudentDropdowns() {
+            const scheduleStudentSelect = document.getElementById('scheduleStudent');
+            const reportStudentSelect = document.getElementById('reportStudent');
+            
+            scheduleStudentSelect.innerHTML = '<option value="" disabled selected>Pilih siswa</option>';
+            reportStudentSelect.innerHTML = '<option value="" disabled selected>Pilih siswa</option>';
+            
+            students.forEach(student => {
+                const scheduleOption = document.createElement('option');
+                scheduleOption.value = student.id;
+                scheduleOption.textContent = `${student.name} - ${student.grade} (${student.subject})`;
+                scheduleStudentSelect.appendChild(scheduleOption);
+                
+                const reportOption = document.createElement('option');
+                reportOption.value = student.id;
+                reportOption.textContent = `${student.name} - ${student.grade} (${student.subject})`;
+                reportStudentSelect.appendChild(reportOption);
+            });
+        }
+        
+        // Fungsi untuk menampilkan daftar siswa
+        function renderStudentList() {
+            const studentList = document.getElementById('studentList');
+            
+            if (students.length === 0) {
+                studentList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>Belum ada siswa yang ditambahkan</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            students.forEach(student => {
+                const studentSchedules = schedules.filter(s => s.studentId === student.id);
+                
+                html += `
+                    <div class="student-item">
+                        <div>
+                            <div class="student-name">${student.name}</div>
+                            <div class="student-info">${student.grade} - ${student.subject}</div>
+                            <div class="student-info">Jumlah jadwal: ${studentSchedules.length}</div>
+                        </div>
+                        <div class="student-actions">
+                            <button type="button" class="btn btn-warning" onclick="viewStudentSchedules('${student.id}')">
+                                <i class="fas fa-eye"></i> Lihat
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="deleteStudent('${student.id}')">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            studentList.innerHTML = html;
+        }
+        
+        // Fungsi untuk menampilkan jadwal per siswa
+        function renderSchedulesTabs() {
+            const schedulesTabs = document.getElementById('schedulesTabs');
+            
+            if (students.length === 0) {
+                schedulesTabs.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>Belum ada jadwal les yang ditambahkan</p>
+                        <p class="small">Tambahkan siswa dan jadwal les terlebih dahulu</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            students.forEach(student => {
+                const studentSchedules = schedules.filter(s => s.studentId === student.id);
+                
+                // Sort schedules by date (newest first)
+                studentSchedules.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                html += `
+                    <div class="student-schedule-tab" id="tab-${student.id}">
+                        <h3>${student.name} - ${student.grade} (${student.subject})</h3>
+                        ${studentSchedules.length === 0 ? 
+                            `<p class="no-data">Belum ada jadwal les untuk ${student.name}</p>` :
+                            `<table class="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Hari</th>
+                                        <th>Jam Mulai</th>
+                                        <th>Jam Selesai</th>
+                                        <th>Durasi</th>
+                                        <th>Materi yang Diajarkan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${studentSchedules.map(schedule => {
+                                        const date = new Date(schedule.date);
+                                        const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                                        const day = dayNames[date.getDay()];
+                                        const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                                        
+                                        // Calculate duration
+                                        const startTime = schedule.startTime;
+                                        const endTime = schedule.endTime;
+                                        const startHours = parseInt(startTime.split(':')[0]);
+                                        const startMinutes = parseInt(startTime.split(':')[1]);
+                                        const endHours = parseInt(endTime.split(':')[0]);
+                                        const endMinutes = parseInt(endTime.split(':')[1]);
+                                        
+                                        let durationHours = endHours - startHours;
+                                        let durationMinutes = endMinutes - startMinutes;
+                                        
+                                        if (durationMinutes < 0) {
+                                            durationHours--;
+                                            durationMinutes += 60;
+                                        }
+                                        
+                                        const duration = `${durationHours} jam ${durationMinutes} menit`;
+                                        
+                                        return `
+                                            <tr>
+                                                <td>${formattedDate}</td>
+                                                <td>${day}</td>
+                                                <td>${startTime}</td>
+                                                <td>${endTime}</td>
+                                                <td>${duration}</td>
+                                                <td>${schedule.material}</td>
+                                                <td class="actions-cell">
+                                                    <button class="btn btn-warning" onclick="editSchedule('${schedule.id}')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-danger" onclick="deleteSchedule('${schedule.id}')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>`
+                        }
+                    </div>
+                `;
+            });
+            
+            schedulesTabs.innerHTML = html;
+        }
+        
+        // Fungsi untuk menambahkan siswa baru
+        function handleAddStudent(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('studentName').value;
+            const grade = document.getElementById('studentGrade').value;
+            const subject = document.getElementById('studentSubject').value;
+            
+            // Generate unique ID
+            const id = 'student_' + Date.now();
+            
+            // Add student to array
+            students.push({ id, name, grade, subject });
+            
+            // Save data
+            saveData();
+            
+            // Update UI
+            loadStudentDropdowns();
+            renderStudentList();
+            renderSchedulesTabs();
+            
+            // Reset form
+            document.getElementById('addStudentForm').reset();
+            
+            // Show notification
+            showNotification(`Siswa "${name}" berhasil ditambahkan`);
+        }
+        
+        // Fungsi untuk menambahkan jadwal baru
+        function handleAddSchedule(e) {
+            e.preventDefault();
+            
+            const studentId = document.getElementById('scheduleStudent').value;
+            const date = document.getElementById('scheduleDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const material = document.getElementById('scheduleMaterial').value;
+            
+            // Validate time
+            if (startTime >= endTime) {
+                showNotification('Jam selesai harus setelah jam mulai', 'error');
+                return;
+            }
+            
+            // Parse date from dd-mm-yyyy format
+            const dateParts = date.split('-');
+            const formattedDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+            
+            // Generate unique ID
+            const id = 'schedule_' + Date.now();
+            
+            // Add schedule to array
+            schedules.push({
+                id,
+                studentId,
+                date: formattedDate,
+                startTime,
+                endTime,
+                material
+            });
+            
+            // Save data
+            saveData();
+            
+            // Update UI
+            renderSchedulesTabs();
+            
+            // Reset form
+            document.getElementById('addScheduleForm').reset();
+            
+            // Show notification
+            const student = students.find(s => s.id === studentId);
+            showNotification(`Jadwal les untuk ${student.name} berhasil ditambahkan`);
+        }
+        
+        // Fungsi untuk menghapus siswa
+        function deleteStudent(studentId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus siswa ini? Semua jadwal terkait juga akan dihapus.')) {
+                return;
+            }
+            
+            // Remove student
+            students = students.filter(s => s.id !== studentId);
+            
+            // Remove associated schedules
+            schedules = schedules.filter(s => s.studentId !== studentId);
+            
+            // Save data
+            saveData();
+            
+            // Update UI
+            loadStudentDropdowns();
+            renderStudentList();
+            renderSchedulesTabs();
+            
+            // Show notification
+            showNotification('Siswa berhasil dihapus', 'warning');
+        }
+        
+        // Fungsi untuk menghapus jadwal
+        function deleteSchedule(scheduleId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus jadwal ini?')) {
+                return;
+            }
+            
+            // Remove schedule
+            schedules = schedules.filter(s => s.id !== scheduleId);
+            
+            // Save data
+            saveData();
+            
+            // Update UI
+            renderSchedulesTabs();
+            
+            // Show notification
+            showNotification('Jadwal berhasil dihapus', 'warning');
+        }
+        
+        // Fungsi untuk melihat jadwal siswa tertentu
+        function viewStudentSchedules(studentId) {
+            // Scroll to schedules section
+            document.querySelector('.schedules-container').scrollIntoView({ behavior: 'smooth' });
+            
+            // Highlight the tab
+            const allTabs = document.querySelectorAll('.student-schedule-tab');
+            allTabs.forEach(tab => tab.style.display = 'none');
+            
+            const selectedTab = document.getElementById(`tab-${studentId}`);
+            if (selectedTab) {
+                selectedTab.style.display = 'block';
+            }
+        }
+        
+        // Fungsi untuk mengedit jadwal
+        function editSchedule(scheduleId) {
+            const schedule = schedules.find(s => s.id === scheduleId);
+            
+            if (!schedule) return;
+            
+            // Format date to dd-mm-yyyy
+            const date = new Date(schedule.date);
+            const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+            
+            // Fill form with schedule data
+            document.getElementById('scheduleStudent').value = schedule.studentId;
+            document.getElementById('scheduleDate').value = formattedDate;
+            document.getElementById('startTime').value = schedule.startTime;
+            document.getElementById('endTime').value = schedule.endTime;
+            document.getElementById('scheduleMaterial').value = schedule.material;
+            
+            // Scroll to form
+            document.getElementById('addScheduleForm').scrollIntoView({ behavior: 'smooth' });
+            
+            // Change form button text
+            const submitButton = document.querySelector('#addScheduleForm button[type="submit"]');
+            submitButton.innerHTML = '<i class="fas fa-save"></i> Update Jadwal';
+            submitButton.dataset.editing = scheduleId;
+            
+            // Temporarily change form submit behavior
+            const form = document.getElementById('addScheduleForm');
+            const originalSubmit = form.onsubmit;
+            
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                
+                // Update schedule
+                const studentId = document.getElementById('scheduleStudent').value;
+                const date = document.getElementById('scheduleDate').value;
+                const startTime = document.getElementById('startTime').value;
+                const endTime = document.getElementById('endTime').value;
+                const material = document.getElementById('scheduleMaterial').value;
+                
+                // Validate time
+                if (startTime >= endTime) {
+                    showNotification('Jam selesai harus setelah jam mulai', 'error');
+                    return;
+                }
+                
+                // Parse date from dd-mm-yyyy format
+                const dateParts = date.split('-');
+                const formattedDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+                
+                // Update schedule in array
+                const scheduleIndex = schedules.findIndex(s => s.id === scheduleId);
+                if (scheduleIndex !== -1) {
+                    schedules[scheduleIndex] = {
+                        id: scheduleId,
+                        studentId,
+                        date: formattedDate,
+                        startTime,
+                        endTime,
+                        material
+                    };
+                }
+                
+                // Save data
+                saveData();
+                
+                // Update UI
+                renderSchedulesTabs();
+                
+                // Reset form
+                form.reset();
+                
+                // Restore original button and submit handler
+                submitButton.innerHTML = '<i class="fas fa-calendar-check"></i> Tambah Jadwal';
+                delete submitButton.dataset.editing;
+                form.onsubmit = originalSubmit;
+                
+                // Show notification
+                const student = students.find(s => s.id === studentId);
+                showNotification(`Jadwal les untuk ${student.name} berhasil diperbarui`);
+            };
+        }
+        
+        // Fungsi untuk mengisi opsi tahun
+        function populateYearOptions() {
+            const yearSelect = document.getElementById('reportYear');
+            const currentYear = new Date().getFullYear();
+            
+            // Kosongkan dulu
+            yearSelect.innerHTML = '';
+            
+            // Tambahkan opsi dari 2023 sampai 2030
+            for (let year = 2023; year <= 2030; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === currentYear) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
+            }
+        }
+        
+        // Fungsi untuk generate laporan PDF
+        function generatePDF(student, schedules, month, year) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const monthName = monthNames[month - 1];
+            
+            // Set font to Times (closest to Times New Roman)
+            doc.setFont("times");
+            
+            // Add title - SAMA PERSIS DENGAN PREVIEW
+            doc.setFontSize(18);
+            doc.setFont("times", "bold");
+            doc.text("ABSEN LES PRIVATE", 105, 20, { align: 'center' });
+            
+            // Add student info - SAMA PERSIS DENGAN PREVIEW
+            doc.setFontSize(12);
+            doc.setFont("times", "normal");
+            doc.text(`Nama Siswa : ${student.name}`, 14, 35);
+            doc.text(`Bulan : ${monthName} ${year}`, 14, 42);
+            
+            // Create table
+            const headers = [["No.", "Hari/Tanggal", "Jam", "Materi yang Diajarkan"]];
+            const data = [];
+            
+            // Add up to 20 rows
+            for (let i = 0; i < 20; i++) {
+                if (i < schedules.length) {
+                    const schedule = schedules[i];
+                    const date = new Date(schedule.date);
+                    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const day = dayNames[date.getDay()];
+                    const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const jam = `${schedule.startTime} - ${schedule.endTime}`;
+                    
+                    data.push([`${i + 1}.`, `${day}, ${formattedDate}`, jam, schedule.material]);
+                } else {
+                    data.push([`${i + 1}.`, "", "", ""]);
+                }
+            }
+            
+            // Set table position
+            let startY = 50;
+            
+            // Set column widths - SAMA PERSIS DENGAN PREVIEW
+            const columnWidths = [12, 50, 35, 93]; // Total = 190mm
+            
+            // Draw table headers - SAMA PERSIS DENGAN PREVIEW (background abu-abu, teks hitam)
+            doc.setFillColor(242, 242, 242); // Warna abu-abu #f2f2f2
+            doc.setTextColor(0, 0, 0); // Teks hitam
+            doc.setFont("times", "bold");
+            doc.setFontSize(11);
+            
+            let x = 10;
+            headers[0].forEach((header, i) => {
+                // Buat kotak header dengan border
+                doc.setDrawColor(0, 0, 0); // Border hitam
+                doc.rect(x, startY, columnWidths[i], 10, 'FD'); // FD = Fill and Draw
+                doc.text(header, x + 2, startY + 7);
+                x += columnWidths[i];
+            });
+            
+            // Draw table rows
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("times", "normal");
+            doc.setFontSize(10);
+            
+            data.forEach((row, rowIndex) => {
+                startY += 10;
+                x = 10;
+                
+                // Draw borders for all cells in this row
+                row.forEach((cell, i) => {
+                    doc.setDrawColor(0, 0, 0);
+                    doc.rect(x, startY, columnWidths[i], 10, 'S'); // S = Stroke only
+                    x += columnWidths[i];
+                });
+                
+                // Add text to cells
+                x = 10;
+                row.forEach((cell, i) => {
+                    // Handle long text in material column (column index 3)
+                    if (i === 3 && cell.length > 50) {
+                        const lines = doc.splitTextToSize(cell, columnWidths[i] - 4);
+                        doc.text(lines[0], x + 2, startY + 7);
+                        
+                        // If there are multiple lines, expand the row
+                        if (lines.length > 1) {
+                            for (let j = 1; j < lines.length; j++) {
+                                // Draw extended cell
+                                doc.setDrawColor(0, 0, 0);
+                                doc.rect(x, startY, columnWidths[i], 10 + (j * 5), 'S');
+                                doc.text(lines[j], x + 2, startY + 7 + (j * 5));
+                            }
+                            startY += (lines.length - 1) * 5;
+                        }
+                    } else {
+                        doc.text(cell, x + 2, startY + 7);
+                    }
+                    
+                    x += columnWidths[i];
+                });
+            });
+            
+            // Save PDF
+            const fileName = `Absen Les ${student.name} - ${monthName} ${year}.pdf`;
+            doc.save(fileName);
+            
+            // Show notification
+            showNotification(`Laporan PDF untuk ${student.name} berhasil diunduh`);
+        }
+        
+        // Fungsi untuk menampilkan preview laporan
+        function showPreview(student, schedules, month, year) {
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const monthName = monthNames[month - 1];
+            
+            // Create table rows (max 20 rows as in the image)
+            let tableRows = '';
+            for (let i = 0; i < 20; i++) {
+                if (i < schedules.length) {
+                    const schedule = schedules[i];
+                    const date = new Date(schedule.date);
+                    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                    const day = dayNames[date.getDay()];
+                    const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const jam = `${schedule.startTime} - ${schedule.endTime}`;
+                    
+                    tableRows += `
+                        <tr>
+                            <td>${i + 1}.</td>
+                            <td>${day}, ${formattedDate}</td>
+                            <td>${jam}</td>
+                            <td>${schedule.material}</td>
+                        </tr>
+                    `;
+                } else {
+                    tableRows += `
+                        <tr>
+                            <td>${i + 1}.</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    `;
+                }
+            }
+            
+            const previewHTML = `
+                <h2>ABSEN LES PRIVATE</h2>
+                <p><strong>Nama Siswa :</strong> ${student.name}</p>
+                <p><strong>Bulan :</strong> ${monthName} ${year}</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Hari/Tanggal</th>
+                            <th>Jam</th>
+                            <th>Materi yang Diajarkan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            `;
+            
+            const previewContainer = document.getElementById('reportPreview');
+            previewContainer.innerHTML = previewHTML;
+            previewContainer.classList.remove('hidden');
+            
+            // Scroll to preview
+            previewContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // =============================================
+        // PARENT FUNCTIONS
+        // =============================================
+        
+        // Fungsi untuk inisialisasi view orang tua
+        function initParentView() {
+            if (!currentParentStudent) return;
+            
+            // Tampilkan info siswa
+            document.getElementById('parentStudentName').textContent = currentParentStudent.name;
+            document.getElementById('parentStudentGrade').textContent = `Kelas: ${currentParentStudent.grade}`;
+            document.getElementById('parentStudentSubject').textContent = `Mata Pelajaran: ${currentParentStudent.subject}`;
+            
+            // Isi opsi tahun
+            populateParentYearOptions();
+            
+            // Tampilkan jadwal
+            displayParentSchedule(0, new Date().getFullYear());
+        }
+        
+        // Fungsi untuk mengisi opsi tahun untuk orang tua
+        function populateParentYearOptions() {
+            const yearSelect = document.getElementById('parentYear');
+            const currentYear = new Date().getFullYear();
+            
+            // Kosongkan dulu
+            yearSelect.innerHTML = '';
+            
+            // Tambahkan opsi dari 2023 sampai 2030
+            for (let year = 2023; year <= 2030; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === currentYear) {
+                    option.selected = true;
+                }
+                yearSelect.appendChild(option);
+            }
+        }
+        
+        // Fungsi untuk menampilkan jadwal siswa (orang tua)
+        function displayParentSchedule(month = 0, year = new Date().getFullYear()) {
+            if (!currentParentStudent) return;
+            
+            // Filter jadwal berdasarkan siswa
+            let studentSchedules = schedules.filter(s => s.studentId === currentParentStudent.id);
+            
+            // Filter berdasarkan bulan dan tahun jika dipilih
+            if (month > 0) {
+                studentSchedules = studentSchedules.filter(s => {
+                    const scheduleDate = new Date(s.date);
+                    return scheduleDate.getMonth() + 1 === month && scheduleDate.getFullYear() === year;
+                });
+            }
+            
+            // Sort schedules by date (newest first)
+            studentSchedules.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            const schedulesContainer = document.getElementById('parentSchedules');
+            
+            if (studentSchedules.length === 0) {
+                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const monthName = month > 0 ? monthNames[month - 1] : '';
+                
+                schedulesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>${month > 0 ? `Tidak ada jadwal les untuk ${monthName} ${year}` : 'Belum ada jadwal les yang ditemukan'}</p>
+                    </div>
+                `;
+                
+                // Sembunyikan summary
+                document.getElementById('scheduleSummary').style.display = 'none';
+                return;
+            }
+            
+            let html = `
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Hari</th>
+                            <th>Jam Mulai</th>
+                            <th>Jam Selesai</th>
+                            <th>Durasi</th>
+                            <th>Materi yang Diajarkan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            let totalMinutes = 0;
+            
+            studentSchedules.forEach(schedule => {
+                const date = new Date(schedule.date);
+                const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const day = dayNames[date.getDay()];
+                const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                
+                // Calculate duration
+                const startTime = schedule.startTime;
+                const endTime = schedule.endTime;
+                const startHours = parseInt(startTime.split(':')[0]);
+                const startMinutes = parseInt(startTime.split(':')[1]);
+                const endHours = parseInt(endTime.split(':')[0]);
+                const endMinutes = parseInt(endTime.split(':')[1]);
+                
+                let durationHours = endHours - startHours;
+                let durationMinutes = endMinutes - startMinutes;
+                
+                if (durationMinutes < 0) {
+                    durationHours--;
+                    durationMinutes += 60;
+                }
+                
+                const duration = `${durationHours} jam ${durationMinutes} menit`;
+                
+                // Add to total
+                totalMinutes += (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+                
+                html += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${day}</td>
+                        <td>${startTime}</td>
+                        <td>${endTime}</td>
+                        <td>${duration}</td>
+                        <td>${schedule.material}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            schedulesContainer.innerHTML = html;
+            
+            // Tampilkan summary
+            const totalHours = Math.floor(totalMinutes / 60);
+            const remainingMinutes = totalMinutes % 60;
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const monthName = month > 0 ? monthNames[month - 1] : '';
+            
+            document.getElementById('totalSessions').innerHTML = `
+                <strong>Total Pertemuan:</strong> ${studentSchedules.length} sesi ${month > 0 ? `pada ${monthName} ${year}` : ''}
+            `;
+            
+            document.getElementById('totalHours').innerHTML = `
+                <strong>Total Jam Les:</strong> ${totalHours} jam ${remainingMinutes} menit
+            `;
+            
+            document.getElementById('scheduleSummary').style.display = 'block';
+        }
+        
+        // =============================================
+        // INITIALIZATION
+        // =============================================
+        
+        // Inisialisasi data awal
+        function init() {
+            // Update tahun di footer
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+            
+            // Event listener untuk form login
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                
+                login(username, password);
+            });
+            
+            // Event listener untuk logout
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            // Event listener untuk toggle tema
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                isDarkTheme = !isDarkTheme;
+                setTheme(isDarkTheme);
+            });
+            
+            // Event listener untuk filter jadwal (orang tua)
+            document.getElementById('filterScheduleBtn').addEventListener('click', function() {
+                if (!currentParentStudent) return;
+                
+                const selectedMonth = parseInt(document.getElementById('parentMonth').value);
+                const selectedYear = parseInt(document.getElementById('parentYear').value);
+                
+                displayParentSchedule(selectedMonth, selectedYear);
+                
+                const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                const monthName = selectedMonth > 0 ? monthNames[selectedMonth - 1] : 'Semua Bulan';
+                
+                showNotification(`Jadwal difilter untuk ${monthName} ${selectedYear}`);
+            });
+            
+            // Tambahkan data contoh jika tidak ada data
+            if (students.length === 0) {
+                // Tambahkan beberapa siswa contoh
+                students.push({
+                    id: 'student_1',
+                    name: 'Budi Santoso',
+                    grade: '10 SMA',
+                    subject: 'Matematika'
+                });
+                
+                students.push({
+                    id: 'student_2',
+                    name: 'Sari Dewi',
+                    grade: '8 SMP',
+                    subject: 'Bahasa Inggris'
+                });
+                
+                students.push({
+                    id: 'student_3',
+                    name: 'Ahmad Fauzi',
+                    grade: '5 SD',
+                    subject: 'IPA'
+                });
+                
+                // Tambahkan beberapa jadwal contoh
+                const today = new Date();
+                const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                
+                schedules.push({
+                    id: 'schedule_1',
+                    studentId: 'student_1',
+                    date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 5),
+                    startTime: '15:00',
+                    endTime: '17:00',
+                    material: 'Trigonometri - Rumus sinus, cosinus, dan tangen'
+                });
+                
+                schedules.push({
+                    id: 'schedule_2',
+                    studentId: 'student_1',
+                    date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 12),
+                    startTime: '15:00',
+                    endTime: '17:00',
+                    material: 'Trigonometri - Penyelesaian soal segitiga'
+                });
+                
+                schedules.push({
+                    id: 'schedule_3',
+                    studentId: 'student_2',
+                    date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 8),
+                    startTime: '14:00',
+                    endTime: '15:30',
+                    material: 'Simple Present Tense dan penggunaannya'
+                });
+                
+                schedules.push({
+                    id: 'schedule_4',
+                    studentId: 'student_3',
+                    date: new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 10),
+                    startTime: '16:00',
+                    endTime: '17:00',
+                    material: 'Sistem pernapasan pada manusia'
+                });
+                
+                // Simpan data
+                saveData();
+            }
+            
+            // Set tema berdasarkan preferensi tersimpan
+            setTheme(isDarkTheme);
+            
+            // Setup event listeners untuk admin (akan diaktifkan saat login admin)
+            if (document.getElementById('addStudentForm')) {
+                document.getElementById('addStudentForm').addEventListener('submit', handleAddStudent);
+                document.getElementById('addScheduleForm').addEventListener('submit', handleAddSchedule);
+                
+                document.getElementById('generateReport').addEventListener('click', function() {
+                    const studentId = document.getElementById('reportStudent').value;
+                    const month = parseInt(document.getElementById('reportMonth').value);
+                    const year = parseInt(document.getElementById('reportYear').value);
+                    
+                    if (!studentId) {
+                        showNotification('Pilih siswa terlebih dahulu', 'error');
+                        return;
+                    }
+                    
+                    const student = students.find(s => s.id === studentId);
+                    if (!student) {
+                        showNotification('Siswa tidak ditemukan', 'error');
+                        return;
+                    }
+                    
+                    // Filter schedules for selected student, month, and year
+                    const studentSchedules = schedules.filter(s => {
+                        if (s.studentId !== studentId) return false;
+                        
+                        const scheduleDate = new Date(s.date);
+                        return scheduleDate.getMonth() + 1 === month && scheduleDate.getFullYear() === year;
+                    });
+                    
+                    if (studentSchedules.length === 0) {
+                        showNotification(`Tidak ada jadwal les untuk ${student.name} pada bulan yang dipilih`, 'warning');
+                        return;
+                    }
+                    
+                    // Sort schedules by date
+                    studentSchedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    
+                    // Generate PDF
+                    generatePDF(student, studentSchedules, month, year);
+                });
+                
+                document.getElementById('previewReport').addEventListener('click', function() {
+                    const studentId = document.getElementById('reportStudent').value;
+                    const month = parseInt(document.getElementById('reportMonth').value);
+                    const year = parseInt(document.getElementById('reportYear').value);
+                    
+                    if (!studentId) {
+                        showNotification('Pilih siswa terlebih dahulu', 'error');
+                        return;
+                    }
+                    
+                    const student = students.find(s => s.id === studentId);
+                    if (!student) {
+                        showNotification('Siswa tidak ditemukan', 'error');
+                        return;
+                    }
+                    
+                    // Filter schedules for selected student, month, and year
+                    const studentSchedules = schedules.filter(s => {
+                        if (s.studentId !== studentId) return false;
+                        
+                        const scheduleDate = new Date(s.date);
+                        return scheduleDate.getMonth() + 1 === month && scheduleDate.getFullYear() === year;
+                    });
+                    
+                    if (studentSchedules.length === 0) {
+                        showNotification(`Tidak ada jadwal les untuk ${student.name} pada bulan yang dipilih`, 'warning');
+                        return;
+                    }
+                    
+                    // Sort schedules by date
+                    studentSchedules.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    
+                    // Show preview
+                    showPreview(student, studentSchedules, month, year);
+                });
+            }
+        }
+        
+        // Inisialisasi aplikasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
